@@ -7,7 +7,16 @@ import io
 from datetime import datetime
 import os
 import warnings
+import logging
+import sys
 warnings.filterwarnings("ignore", message="Error fetching version info")
+warnings.filterwarnings("ignore", category=UserWarning, module="onnxruntime")
+warnings.filterwarnings("ignore", category=FutureWarning, module="insightface")
+warnings.filterwarnings("ignore", category=FutureWarning, module="skimage")
+
+# Suppress insightface model loading messages
+logging.getLogger("insightface").setLevel(logging.WARNING)
+logging.getLogger("onnxruntime").setLevel(logging.WARNING)
 
 try:
     from dotenv import load_dotenv
@@ -101,8 +110,17 @@ def compare_faces(id_image, selfie_image):
         }
 
     try:
-        model = insightface.app.FaceAnalysis(name='buffalo_l')
-        model.prepare(ctx_id=-1, det_size=(640, 640))
+        # Suppress insightface model loading output
+        from contextlib import redirect_stdout, redirect_stderr
+        import io
+
+        # Capture stdout and stderr during model initialization
+        stdout_capture = io.StringIO()
+        stderr_capture = io.StringIO()
+
+        with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
+            model = insightface.app.FaceAnalysis(name='buffalo_l')
+            model.prepare(ctx_id=-1, det_size=(640, 640))
 
         id_array = np.array(id_image)
         selfie_array = np.array(selfie_image)

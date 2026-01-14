@@ -139,8 +139,41 @@ main {
 
 .step-description {
   color: var(--text-secondary);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   font-size: 16px;
+}
+
+.instructions {
+  background: var(--background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 32px;
+}
+
+.instructions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.instructions li {
+  color: var(--text-primary);
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.instructions li:last-child {
+  margin-bottom: 0;
+}
+
+.instructions li:before {
+  content: "💡";
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .capture-section {
