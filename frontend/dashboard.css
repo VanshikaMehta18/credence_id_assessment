@@ -257,6 +257,14 @@ body {
     border: 1px solid var(--border-color);
 }
 
+.show-all-container {
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
 table {
     width: 100%;
     border-collapse: collapse;

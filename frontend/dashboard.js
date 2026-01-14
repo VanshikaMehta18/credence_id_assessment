@@ -2,6 +2,7 @@ const API_BASE = 'http://localhost:3000';
 
 let allSessions = [];
 let charts = {};
+let showAllSessions = false;
 
 async function init() {
     await loadData();
@@ -11,10 +12,11 @@ async function init() {
 
 async function loadData() {
     try {
-        const response = await fetch(`${API_BASE}/admin/sessions`);
+        const response = await fetch(`${API_BASE}/analytics/sessions`);
         if (!response.ok) throw new Error('Failed to fetch data');
 
         allSessions = await response.json();
+        showAllSessions = false;
         updateStats();
         updateTable();
         updateCharts();
@@ -53,14 +55,19 @@ function updateStats() {
 
 function updateTable() {
     const tbody = document.getElementById('sessionsTableBody');
+    const showAllContainer = document.getElementById('showAllContainer');
+    const showAllBtn = document.getElementById('showAllBtn');
 
     if (allSessions.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" class="loading">No sessions found</td></tr>';
+        showAllContainer.style.display = 'none';
         return;
     }
 
-    tbody.innerHTML = allSessions
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    const sortedSessions = allSessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const displaySessions = showAllSessions ? sortedSessions : sortedSessions.slice(0, 7);
+
+    tbody.innerHTML = displaySessions
         .map(session => `
             <tr>
                 <td><code>${session.id.substring(0, 8)}...</code></td>
@@ -76,6 +83,15 @@ function updateTable() {
                 <td><button class="btn-view" onclick="viewSession('${session.id}')">View</button></td>
             </tr>
         `).join('');
+
+    if (allSessions.length > 7) {
+        showAllContainer.style.display = 'block';
+        showAllBtn.innerHTML = showAllSessions
+            ? '<span class="icon">📋</span>Show Less'
+            : `<span class="icon">📋</span>Show All Sessions (${allSessions.length - 7} more)`;
+    } else {
+        showAllContainer.style.display = 'none';
+    }
 }
 
 function createCharts() {
@@ -389,6 +405,11 @@ function setupEventListeners() {
 
     document.getElementById('exportBtn').addEventListener('click', exportToCSV);
 
+    document.getElementById('showAllBtn').addEventListener('click', () => {
+        showAllSessions = !showAllSessions;
+        updateTable();
+    });
+
     document.getElementById('closeModal').addEventListener('click', () => {
         document.getElementById('sessionModal').classList.remove('active');
     });
@@ -402,13 +423,19 @@ function setupEventListeners() {
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+
+    const pstOptions = {
+        timeZone: 'America/Los_Angeles',
         year: 'numeric',
         month: 'short',
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    };
+
+    const formatted = date.toLocaleString('en-US', pstOptions);
+    return `${formatted} PST`;
 }
 
 function showError(message) {

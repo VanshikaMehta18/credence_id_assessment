@@ -1,10 +1,7 @@
 # Database Schema Documentation
 
-## Overview
+The ID Verification System uses SQLite as its database. The database file `verification.db` is automatically created in the database directory when the server starts for the first time.
 
-The ID Verification System uses SQLite as its database. The database file `verification.db` is automatically created in the database directory under the root directory when the server starts for the first time.
-
-## Tables
 
 ### sessions
 

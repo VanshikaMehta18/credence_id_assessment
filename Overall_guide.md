@@ -1,100 +1,38 @@
 
 # Overall Guide
 
+## Features
 
-### Analytics Dashboard 📊
-- **Real-time statistics** - Total sessions, completion rate, pass rate
-- **Interactive visualizations** - Doughnut charts, bar charts, line graphs
-- **Session management** - View detailed session information with images
-- **Data export** - Export session data to CSV
-- **Beautiful UI** - Modern dark theme with smooth animations
-- **Live updates** - Refresh data on demand
+### Identity Verification Flow
+Capture ID images and a live selfie, perform server-side face matching using ML models, and review results before final submission.
 
-
-## Database Schema
-
-```sql
-CREATE TABLE sessions (
-  id TEXT PRIMARY KEY,
-  id_front TEXT,
-  id_back TEXT,
-  selfie TEXT,
-  face_match_score REAL,
-  face_match_result TEXT,
-  status TEXT DEFAULT 'pending',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  submitted_at DATETIME
-);
-```
-
+### Analytics Dashboard - Realtime 
+Monitor live verification sessions with interactive charts, detailed session views, exportable data, and a modern, responsive UI.
 
 
 ## API Endpoints
 
-### Create Session
-```
-POST /session
-Response: { "sessionId": "uuid" }
-```
+### Session Management
+- `POST /session` - Create new verification session
+- `POST /session/{id}/id` - Upload ID images
+- `POST /session/{id}/selfie` - Upload selfie and perform face matching
+- `POST /session/{id}/submit` - Submit verification session
+- `GET /session/{id}` - Get session details
 
-### Upload ID Images
-```
-POST /session/{id}/id
-Request: {
-  "idFront": "<base64>",
-  "idBack": "<base64>"
-}
-Response: { "status": "success" }
-```
-
-### Upload Selfie & Face Match
-```
-POST /session/{id}/selfie
-Request: { "selfie": "<base64>" }
-Response: {
-  "score": 0.78,
-  "result": "PASS"
-}
-```
-
-### Submit Session
-```
-POST /session/{id}/submit
-Response: {
-  "status": "SUCCESS",
-  "sessionId": "uuid",
-  "result": "PASS"
-}
-```
-
-
-### Get Session
-```
-GET /session/{id}
-Response: {
-  "id": "uuid",
-  "id_front": "<base64>",
-  "id_back": "<base64>",
-  "selfie": "<base64>",
-  "face_match_score": 0.78,
-  "face_match_result": "PASS",
-  "status": "submitted",
-  "created_at": "timestamp",
-  "submitted_at": "timestamp"
-}
-```
+### Analytics
+- `GET /analytics/sessions` - Get all sessions for dashboard
 
 
 ## Technology Stack
 
 ### Backend
-- Node.js with Express
+- Python with Flask
+- InsightFace for advanced face recognition
 - SQLite for data persistence
 - RESTful API endpoints
 
 ### Frontend
 - Vanilla HTML/CSS/JavaScript
-- face-api.js (@vladmandic/face-api) loaded from CDN for client-side face matching
 - Chart.js v4.4.0 for data visualizations
 - MediaDevices API for camera access
 - Fetch API for backend communication
@@ -107,21 +45,29 @@ Response: {
 
 
 
-## Project Structure
+## Development
 
+### Project Structure
 ```
 credence_id_assessment/
-├── frontend/           # UI files (HTML, CSS, JS)
-│   ├── index.html      # Main application entry
-│   ├── dashboard.html  # Analytics dashboard
-│   ├── app.js          # Core logic
+├── backend/              # Python Flask server
+│   ├── app.py           # Main application
+│   ├── config.py        # Configuration settings
+│   └── requirements.txt # Python dependencies
+├── frontend/            # Web interface
+│   ├── index.html       # Main application
+│   ├── dashboard.html   # Analytics dashboard
+│   ├── app.js          # Core application logic
 │   ├── dashboard.js    # Dashboard logic
 │   └── styles.css      # Styling
-├── backend/            # Express server and API
-│   ├── server.js       # Main server file
-│   └── package.json    # Dependencies and scripts
-└── database/           # SQLite database and documentation
-    ├── verification.db # SQLite database
-    └── DATABASE_SCHEMA.md # Database documentation
+├── database/           # SQLite database
+│   ├── verification.db # Database file
+│   └── Database_guide.md # Database documentation
+├── env.example         # Environment configuration template
+└── README.md           # This file
 ```
 
+
+## License
+
+This project is licensed under the terms specified in the LICENSE file.

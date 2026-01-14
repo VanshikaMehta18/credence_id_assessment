@@ -18,62 +18,6 @@ let streams = {
     selfie: null
 };
 
-let modelsLoaded = false;
-
-async function loadFaceApiModels() {
-    if (modelsLoaded) return;
-
-    try {
-        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
-        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-        await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-        modelsLoaded = true;
-        console.log('Face detection models loaded');
-    } catch (error) {
-        console.error('Failed to load face detection models:', error);
-    }
-}
-
-async function compareFaces(idFrontBase64, selfieBase64) {
-    try {
-        if (!modelsLoaded) {
-            await loadFaceApiModels();
-        }
-
-        const idImg = await faceapi.fetchImage(idFrontBase64);
-        const selfieImg = await faceapi.fetchImage(selfieBase64);
-
-        const idDetection = await faceapi
-            .detectSingleFace(idImg)
-            .withFaceLandmarks()
-            .withFaceDescriptor();
-
-        const selfieDetection = await faceapi
-            .detectSingleFace(selfieImg)
-            .withFaceLandmarks()
-            .withFaceDescriptor();
-
-        if (!idDetection || !selfieDetection) {
-            throw new Error('Face not detected in one or both images');
-        }
-
-        const distance = faceapi.euclideanDistance(
-            idDetection.descriptor,
-            selfieDetection.descriptor
-        );
-
-        const score = Math.max(0, 1 - distance);
-        const result = score >= 0.6 ? 'PASS' : 'FAIL';
-
-        return { score: parseFloat(score.toFixed(2)), result };
-    } catch (error) {
-        console.error('Face comparison error:', error);
-        throw error;
-    }
-}
-
-
 async function initSession() {
     try {
         const response = await fetch(`${API_BASE}/session`, {
@@ -167,13 +111,16 @@ function setupIdCapture() {
     const retakeBackBtn = document.getElementById('retakeBack');
     const nextBtn = document.getElementById('nextToSelfie');
 
-    captureFrontBtn.addEventListener('click', () => {
+    captureFrontBtn.addEventListener('click', async () => {
         capturedImages.idFront = captureImage('frontVideo', 'frontCanvas');
-        document.getElementById('frontImg').src = capturedImages.idFront;
+        const frontImg = document.getElementById('frontImg');
+        frontImg.src = capturedImages.idFront;
+
         document.getElementById('frontVideo').style.display = 'none';
         document.getElementById('frontPreview').style.display = 'block';
         captureFrontBtn.style.display = 'none';
         retakeFrontBtn.style.display = 'inline-block';
+
         stopCamera('front');
         checkIdComplete();
     });
@@ -263,15 +210,11 @@ function setupSelfieCapture() {
         showLoading('Performing face match...');
 
         try {
-            const matchResult = await compareFaces(capturedImages.idFront, capturedImages.selfie);
-
             const response = await fetch(`${API_BASE}/session/${sessionId}/selfie`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    selfie: capturedImages.selfie,
-                    score: matchResult.score,
-                    result: matchResult.result
+                    selfie: capturedImages.selfie
                 })
             });
 
