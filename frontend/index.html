@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ID Verification System</title>
+  <meta name="description" content="Secure identity verification with ID capture and face matching">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Identity Verification</h1>
+      <div class="progress-bar">
+        <div class="progress-step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-label">Capture ID</div>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-label">Selfie</div>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-label">Review</div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="step1" class="step active">
+        <h2>Capture Your ID</h2>
+        <p class="step-description">Please capture both the front and back of your government-issued ID</p>
+
+        <div class="capture-section">
+          <div class="capture-card">
+            <h3>ID Front</h3>
+            <div class="camera-container" id="frontCameraContainer">
+              <video id="frontVideo" autoplay playsinline></video>
+              <canvas id="frontCanvas" style="display: none;"></canvas>
+              <div class="preview-image" id="frontPreview" style="display: none;">
+                <img id="frontImg" alt="ID Front">
+              </div>
+            </div>
+            <div class="button-group">
+              <button id="captureFront" class="btn btn-primary">Capture Front</button>
+              <button id="retakeFront" class="btn btn-secondary" style="display: none;">Retake</button>
+            </div>
+          </div>
+
+          <div class="capture-card">
+            <h3>ID Back</h3>
+            <div class="camera-container" id="backCameraContainer">
+              <video id="backVideo" autoplay playsinline></video>
+              <canvas id="backCanvas" style="display: none;"></canvas>
+              <div class="preview-image" id="backPreview" style="display: none;">
+                <img id="backImg" alt="ID Back">
+              </div>
+            </div>
+            <div class="button-group">
+              <button id="captureBack" class="btn btn-primary">Capture Back</button>
+              <button id="retakeBack" class="btn btn-secondary" style="display: none;">Retake</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="nextToSelfie" class="btn btn-large" disabled>Continue to Selfie</button>
+      </section>
+
+      <section id="step2" class="step">
+        <h2>Capture Selfie</h2>
+        <p class="step-description">Take a clear photo of your face for verification</p>
+
+        <div class="capture-section single">
+          <div class="capture-card">
+            <div class="camera-container" id="selfieCameraContainer">
+              <video id="selfieVideo" autoplay playsinline></video>
+              <canvas id="selfieCanvas" style="display: none;"></canvas>
+              <div class="preview-image" id="selfiePreview" style="display: none;">
+                <img id="selfieImg" alt="Selfie">
+              </div>
+            </div>
+            <div class="button-group">
+              <button id="captureSelfie" class="btn btn-primary">Capture Selfie</button>
+              <button id="retakeSelfie" class="btn btn-secondary" style="display: none;">Retake</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="matchResult" class="match-result" style="display: none;">
+          <div class="result-card">
+            <h3>Face Match Result</h3>
+            <div class="score-display">
+              <div class="score-value" id="scoreValue">0.00</div>
+              <div class="score-label">Match Score</div>
+            </div>
+            <div class="result-badge" id="resultBadge">PENDING</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button id="backToId" class="btn btn-secondary">Back</button>
+          <button id="nextToReview" class="btn btn-large" disabled>Continue to Review</button>
+        </div>
+      </section>
+
+      <section id="step3" class="step">
+        <h2>Review & Submit</h2>
+        <p class="step-description">Please review your information before submitting</p>
+
+        <div class="review-grid">
+          <div class="review-card">
+            <h3>ID Front</h3>
+            <img id="reviewFront" alt="ID Front">
+          </div>
+          <div class="review-card">
+            <h3>ID Back</h3>
+            <img id="reviewBack" alt="ID Back">
+          </div>
+          <div class="review-card">
+            <h3>Selfie</h3>
+            <img id="reviewSelfie" alt="Selfie">
+          </div>
+          <div class="review-card result-summary">
+            <h3>Verification Result</h3>
+            <div class="summary-content">
+              <div class="summary-item">
+                <span class="summary-label">Match Score:</span>
+                <span class="summary-value" id="reviewScore">0.00</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Status:</span>
+                <span class="summary-value" id="reviewResult">PENDING</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button id="backToSelfie" class="btn btn-secondary">Back</button>
+          <button id="submitVerification" class="btn btn-large btn-success">Submit Verification</button>
+        </div>
+      </section>
+
+      <section id="stepComplete" class="step">
+        <div class="completion-card">
+          <div class="success-icon">✓</div>
+          <h2>Verification Submitted</h2>
+          <p>Your identity verification has been successfully submitted.</p>
+          <div class="session-info">
+            <p><strong>Session ID:</strong> <span id="completedSessionId"></span></p>
+            <p><strong>Status:</strong> <span id="completedStatus"></span></p>
+          </div>
+          <button id="startNew" class="btn btn-large">Start New Verification</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="errorModal" class="modal">
+      <div class="modal-content">
+        <h3>Error</h3>
+        <p id="errorMessage"></p>
+        <button id="closeError" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+
+    <div id="loadingModal" class="modal">
+      <div class="modal-content">
+        <div class="spinner"></div>
+        <p id="loadingMessage">Processing...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

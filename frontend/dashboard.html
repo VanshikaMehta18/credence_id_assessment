@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Analytics Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">📊</div>
+                    <h1>Verification Analytics</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="refreshBtn" class="btn-refresh">
+                        <span class="icon">🔄</span>
+                        Refresh Data
+                    </button>
+                    <a href="/" class="btn-secondary">
+                        <span class="icon">🏠</span>
+                        Back to App
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-icon">📝</div>
+                <div class="stat-content">
+                    <div class="stat-label">Total Sessions</div>
+                    <div class="stat-value" id="totalSessions">-</div>
+                    <div class="stat-trend" id="totalTrend"></div>
+                </div>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <div class="stat-label">Completed</div>
+                    <div class="stat-value" id="completedSessions">-</div>
+                    <div class="stat-trend" id="completedPercent"></div>
+                </div>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-content">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value" id="pendingSessions">-</div>
+                    <div class="stat-trend" id="pendingPercent"></div>
+                </div>
+            </div>
+
+            <div class="stat-card info">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <div class="stat-label">Pass Rate</div>
+                    <div class="stat-value" id="passRate">-</div>
+                    <div class="stat-trend" id="avgScore"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 1 -->
+        <section class="charts-row">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Session Status Distribution</h3>
+                    <span class="chart-subtitle">Overall completion status</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Face Match Results</h3>
+                    <span class="chart-subtitle">Pass vs Fail verification</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="resultChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 2 -->
+        <section class="charts-row">
+            <div class="chart-card wide">
+                <div class="chart-header">
+                    <h3>Face Match Score Distribution</h3>
+                    <span class="chart-subtitle">Confidence score breakdown</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="scoreDistChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 3 -->
+        <section class="charts-row">
+            <div class="chart-card wide">
+                <div class="chart-header">
+                    <h3>Sessions Over Time</h3>
+                    <span class="chart-subtitle">Daily verification activity</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Sessions Table -->
+        <section class="table-section">
+            <div class="table-header">
+                <h3>Recent Verification Sessions</h3>
+                <div class="table-actions">
+                    <button id="exportBtn" class="btn-export">
+                        <span class="icon">📥</span>
+                        Export CSV
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="sessionsTable">
+                    <thead>
+                        <tr>
+                            <th>Session ID</th>
+                            <th>Status</th>
+                            <th>Result</th>
+                            <th>Score</th>
+                            <th>Created</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessionsTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Session Detail Modal -->
+        <div id="sessionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Session Details</h2>
+                    <button class="modal-close" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
