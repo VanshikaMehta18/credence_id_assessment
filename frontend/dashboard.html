@@ -11,11 +11,9 @@
 
 <body>
     <div class="dashboard-container">
-        <!-- Header -->
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="logo-section">
-                    <div class="logo-icon">📊</div>
                     <h1>Verification Analytics</h1>
                 </div>
                 <div class="header-actions">
@@ -31,10 +29,8 @@
             </div>
         </header>
 
-        <!-- Stats Cards -->
         <section class="stats-grid">
             <div class="stat-card primary">
-                <div class="stat-icon">📝</div>
                 <div class="stat-content">
                     <div class="stat-label">Total Sessions</div>
                     <div class="stat-value" id="totalSessions">-</div>
@@ -43,7 +39,6 @@
             </div>
 
             <div class="stat-card success">
-                <div class="stat-icon">✅</div>
                 <div class="stat-content">
                     <div class="stat-label">Completed</div>
                     <div class="stat-value" id="completedSessions">-</div>
@@ -52,7 +47,6 @@
             </div>
 
             <div class="stat-card warning">
-                <div class="stat-icon">⏳</div>
                 <div class="stat-content">
                     <div class="stat-label">Pending</div>
                     <div class="stat-value" id="pendingSessions">-</div>
@@ -61,65 +55,60 @@
             </div>
 
             <div class="stat-card info">
-                <div class="stat-icon">🎯</div>
                 <div class="stat-content">
-                    <div class="stat-label">Pass Rate</div>
+                    <div class="stat-label">Pass Rate(completed sessions)</div>
                     <div class="stat-value" id="passRate">-</div>
                     <div class="stat-trend" id="avgScore"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Charts Row 1 -->
-        <section class="charts-row">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Session Status Distribution</h3>
-                    <span class="chart-subtitle">Overall completion status</span>
+        <section class="main-grid">
+            <div class="charts-column">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Session Status Distribution</h3>
+                        <span class="chart-subtitle">Overall completion status</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="statusChart"></canvas>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Face Match Results</h3>
+                        <span class="chart-subtitle">Pass vs Fail verification</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="resultChart"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Face Match Results</h3>
-                    <span class="chart-subtitle">Pass vs Fail verification</span>
+            <div class="charts-column">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Face Match Score Distribution</h3>
+                        <span class="chart-subtitle">Confidence score breakdown</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scoreDistChart"></canvas>
+                    </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="resultChart"></canvas>
-                </div>
-            </div>
-        </section>
 
-        <!-- Charts Row 2 -->
-        <section class="charts-row">
-            <div class="chart-card wide">
-                <div class="chart-header">
-                    <h3>Face Match Score Distribution</h3>
-                    <span class="chart-subtitle">Confidence score breakdown</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="scoreDistChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Charts Row 3 -->
-        <section class="charts-row">
-            <div class="chart-card wide">
-                <div class="chart-header">
-                    <h3>Sessions Over Time</h3>
-                    <span class="chart-subtitle">Daily verification activity</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="timelineChart"></canvas>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Sessions Over Time</h3>
+                        <span class="chart-subtitle">Daily verification activity</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Recent Sessions Table -->
         <section class="table-section">
             <div class="table-header">
                 <h3>Recent Verification Sessions</h3>
@@ -152,7 +141,6 @@
             </div>
         </section>
 
-        <!-- Session Detail Modal -->
         <div id="sessionModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -160,7 +148,6 @@
                     <button class="modal-close" id="closeModal">&times;</button>
                 </div>
                 <div class="modal-body" id="modalBody">
-                    <!-- Dynamic content -->
                 </div>
             </div>
         </div>
